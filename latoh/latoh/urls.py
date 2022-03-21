@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-import chat
+from rest_framework import routers
+from chat import views as ChatViews
+
+api_routes = routers.DefaultRouter()
+api_routes.register(r'chat/channels', ChatViews.ChannelGroupViewSet)
 
 urlpatterns = [
     path('chat/', include('chat.urls')),
     path('admin/', admin.site.urls),
-    path('api/', include(chat.urls.router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/', include(api_routes.urls))
 ]
