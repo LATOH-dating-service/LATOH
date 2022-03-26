@@ -18,6 +18,7 @@ from django.urls import path
 from django.conf.urls import include
 from rest_framework import routers
 from chat import views as ChatViews
+from rest_framework.authtoken import views as AuthTOkenViews
 
 api_routes = routers.DefaultRouter()
 api_routes.register(r'chat/users', ChatViews.UserViewset)
@@ -27,5 +28,6 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-token-auth/', AuthTOkenViews.obtain_auth_token),
     path('api/', include(api_routes.urls))
 ]
