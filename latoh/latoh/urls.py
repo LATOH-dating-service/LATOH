@@ -23,6 +23,7 @@ from rest_framework.authtoken import views as AuthTOkenViews
 api_routes = routers.DefaultRouter()
 api_routes.register(r'chat/users', ChatViews.UserViewset)
 api_routes.register(r'chat/groups', ChatViews.GroupViewset)
+api_routes.register(r'chat/messages', ChatViews.ChatViewset)
 
 urlpatterns = [
     path('chat/', include('chat.urls')),

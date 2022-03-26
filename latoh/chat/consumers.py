@@ -5,8 +5,9 @@ from channels.db import database_sync_to_async
 from channels.auth import login
 from urllib.parse import parse_qs
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from chat.serializers import UserMSerializer, GroupMSerializer
+from chat.models import Chat
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -43,15 +44,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
+                'group': group_name,
                 'user': u
             }
         )
     
     async def chat_message(self, event):
+        await self.save_message(event['group'],event['user']['id'],event['message'])
         await self.send(text_data=json.dumps({
             'message': event['message'],
             'user': event['user']
         }))
+    
+    @database_sync_to_async
+    def save_message(self,group_name,user_id,message):
+        g = Group.objects.get(name=group_name)
+        u = User.objects.get(pk=user_id)
+        instance = Chat(group=g,user=u,text=message)
+        instance.save()
 
     @database_sync_to_async
     def get_json_user_groups(self,user):
