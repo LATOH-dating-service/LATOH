@@ -26,3 +26,8 @@ class ChatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model=Chat
         fields='__all__'
+
+class ChatMSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Chat
+        fields='__all__'

@@ -10,9 +10,7 @@
     <input id="chat-message-submit" type="button" value="Send">
     <script>
         const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/stream/?auth=7c673a3f195d0a5d1712fd26c1dd0c4361fb19b6'
+            'ws://localhost:8000/ws/chat/stream/?auth=7c673a3f195d0a5d1712fd26c1dd0c4361fb19b6'
         );
 
         chatSocket.onmessage = function(e) {

@@ -12,6 +12,7 @@ djangorestframework==3.13.1
 hyperlink==21.0.0
 idna==3.3
 incremental==21.3.0
+Pillow==9.1.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
