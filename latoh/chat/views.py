@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import UserSerializer, GroupSerializer, ChatMSerializer, UserMSerializer
+from .serializers import ChatMSerializer, UserMSerializer, GroupMSerializer
 from django.contrib.auth.models import User, Group
 from chat.models import Chat
 
@@ -22,7 +22,7 @@ class UserViewset(viewsets.ModelViewSet):
 
 class GroupViewset(viewsets.ModelViewSet):
     queryset=Group.objects.all()
-    serializer_class=GroupSerializer
+    serializer_class=GroupMSerializer
     permission_classes=[permissions.IsAuthenticated]
 
 class ChatViewset(viewsets.ModelViewSet):
