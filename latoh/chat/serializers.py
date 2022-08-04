@@ -17,17 +17,19 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model=Group
         fields=['url','name']
 
+class ChatMSerializer(serializers.ModelSerializer):
+    user = UserMSerializer(many=False,read_only=True)
+    class Meta:
+        model=Chat
+        fields='__all__'
+
 class GroupMSerializer(serializers.ModelSerializer):
+    users = UserMSerializer(many=True,read_only=True)
     class Meta:
         model=Group
         fields='__all__'
 
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model=Chat
-        fields='__all__'
-
-class ChatMSerializer(serializers.ModelSerializer):
     class Meta:
         model=Chat
         fields='__all__'

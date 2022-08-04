@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 
 class Chat(models.Model):
-    group=models.ForeignKey(Group, on_delete=models.CASCADE,name='group')
-    user=models.ForeignKey(User, on_delete=models.CASCADE,name='user')
+    group=models.ForeignKey(Group, related_name='chats', on_delete=models.CASCADE)
+    user=models.ForeignKey(User, related_name='chats', on_delete=models.CASCADE)
     text=models.TextField()
     date=models.DateTimeField(auto_now=True,)
 
