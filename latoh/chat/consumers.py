@@ -39,7 +39,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         group_name = text_data_json['group']
         u = await self.get_json_user(self.scope['user'])
         
-        print("Sending message to group")
         await self.channel_layer.group_send(
             group_name,
             {
@@ -49,18 +48,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'user': u
             }
         )
-        print("Done sending message to group")
     
     async def chat_message(self, event):
-        print("Saving message to database")
         await self.save_message(event['group'],event['user']['id'],event['message'])
-        print("DSone saving message to database")
-        print("\n sending back to user")
         await self.send(text_data=json.dumps({
             'message': event['message'],
             'user': event['user']
         }))
-        print("\nDone sending back to user")
     
     @database_sync_to_async
     def save_message(self,group_name,user_id,message):
