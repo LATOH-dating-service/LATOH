@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
-from chat.models import Chat
+from chat.models import Chat,Conversation,Message
 
 class UserMSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,4 +32,16 @@ class GroupMSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model=Chat
+        fields='__all__'
+
+# well thought of
+class ConversationSerializer(serializers.ModelSerializer):
+    #online=UserMSerializer(many=True,read_only=True)
+    class Meta:
+        model=Conversation
+        fields='__all__'
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Message
         fields='__all__'

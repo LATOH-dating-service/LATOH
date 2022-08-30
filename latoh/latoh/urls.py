@@ -19,7 +19,7 @@ from django.conf.urls import include
 from rest_framework import routers
 from chat import views as ChatViews
 from rest_framework.authtoken import views as AuthTOkenViews
-from .views import CustomAuthToken
+from .views import CustomAuthToken, HomeViewset
 from meet.views import MeetViewset
 from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
@@ -27,12 +27,14 @@ from django.views.decorators.csrf import csrf_exempt
 api_routes = routers.DefaultRouter()
 api_routes.register(r'chat/users', ChatViews.UserViewset)
 api_routes.register(r'chat/groups', ChatViews.GroupViewset)
-api_routes.register(r'chat/messages', ChatViews.ChatViewset)
+api_routes.register(r'chat/conversations', ChatViews.ConversationViewset)
+api_routes.register(r'chat/messages', ChatViews.MessageViewset)
 api_routes.register(r'meet', MeetViewset)
 
 urlpatterns = [
-    path('chat/', include('chat.urls')),
     path('admin/', admin.site.urls),
+    path('', HomeViewset.as_view(),name="home"),
+    path('chat/', include('chat.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', CustomAuthToken.as_view()),
     path('api/', include(api_routes.urls)),

@@ -2,6 +2,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from chat.serializers import UserMSerializer
+from django.views.generic import TemplateView
 
 class CustomAuthToken(ObtainAuthToken):
 
@@ -15,3 +16,6 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key,
             'user': userSerialized.data
         })
+
+class HomeViewset(TemplateView):
+    template_name: str = "base.html"

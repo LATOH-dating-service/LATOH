@@ -38,14 +38,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'graphene_django',
-    'chat',
-    'meet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'latoh',
+    'chat',
+    'meet',
 ]
 
 MIDDLEWARE = [
@@ -152,5 +153,8 @@ STATICFILES_DIRS = [
 ]
 
 GRAPHENE = {
-    "SCHEMA": "latoh.schema.schema"
+    "SCHEMA": "latoh.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ]
 }
