@@ -2,6 +2,94 @@
 
 {% block title %}Messages{% endblock title %}
 
+{% block css %}
+<style>
+    .message {
+        max-width: 80%;
+        width: fit-content;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    
+    .full-height {
+      height: 100%;
+      background: yellow;
+    }
+    #messages {
+        height:90vh;
+    }
+</style>
+{% endblock css %}
 {% block main %}
-{{conversation.name}}
+<div class='container'>
+    <div id="messages"></div>
+    <div class="form-floating input-group position-sticky bottom-0">
+        <textarea class="form-control" id="chat-message-input" placeholder="Type your message"></textarea>
+        <label for="chat-message-input">Type your message here.</label>
+        <button class="btn btn-outline-secondary" type="button" id="chat-message-submit">Send</button>
+    </div>
+    {{ conversation|json_script:"conversation" }}
+</div>
+<script>
+    function messageHTML(message){
+        //message container
+        var message_container = document.createElement("div")
+        message_container.classList.add("message-container")
+        message_container.classList.add("clearfix")
+        //message card
+        var message_card = document.createElement("div")
+        message_card.classList.add("card")
+        message_card.classList.add("message")
+        message_card.classList.add("float-end")
+        message_card.classList.add("text-end")
+        //message card body
+        var message_card_body = document.createElement("div")
+        message_card_body.classList.add("card-body")
+        message_card_body.classList.add("p-2")
+        message_card_body.innerHTML = message.content
+
+        message_card.appendChild(message_card_body)
+        message_container.appendChild(message_card)
+        return message_container
+    }
+    var conversation = JSON.parse(document.querySelector("#conversation").textContent)
+    const chatSocket = new WebSocket(
+        'ws://localhost:8000/ws/chat/stream/?auth=ec6a45545e39814adaf7028edf4ce3004a15cf5f'
+    );
+
+    chatSocket.addEventListener('open',(event)=>{
+        console.log('connected')
+    })
+
+    chatSocket.addEventListener('message',(event)=>{
+        const data = JSON.parse(event.data);
+        var new_message = messageHTML(data.message)
+        document.querySelector('#messages').appendChild(new_message)
+        window.scrollTo(0, document.body.scrollHeight)
+    })
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) { // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': {
+                'content': message
+            },
+            'code': conversation.code
+        }));
+        messageInputDom.value = '';
+    };
+</script>
 {% endblock main %}

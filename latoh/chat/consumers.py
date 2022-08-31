@@ -6,8 +6,9 @@ from channels.auth import login
 from urllib.parse import parse_qs
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User, Group
+from django.shortcuts import get_object_or_404
 from chat.serializers import UserMSerializer, GroupMSerializer
-from chat.models import Chat
+from chat.models import Chat,Conversation
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -19,38 +20,41 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         self.user_groups = await self.get_json_user_groups(self.user)
         #Join groups
-        for user_group in self.user_groups:
+        ac = await self.get_user_conversations(self.user)
+        for x in ac:
             await self.channel_layer.group_add(
-                user_group['name'],
+                x.code,
                 self.channel_name
             )
+
 
         await self.accept()
     
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        ac = await self.get_user_conversations(self.user)
+        for x in ac:
+            await self.channel_layer.group_discard(
+                x.code,
+                self.channel_name
+            )
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        group_name = text_data_json['group']
+        code = text_data_json['code']
         u = await self.get_json_user(self.scope['user'])
         
         await self.channel_layer.group_send(
-            group_name,
+            code,
             {
                 'type': 'chat_message',
                 'message': message,
-                'group': group_name,
                 'user': u
             }
         )
     
     async def chat_message(self, event):
-        await self.save_message(event['group'],event['user']['id'],event['message'])
+        #await self.save_message(event['group'],event['user']['id'],event['message'])
         await self.send(text_data=json.dumps({
             'message': event['message'],
             'user': event['user']
@@ -79,5 +83,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def get_token_user(self,token):
-        tokenInstance = Token.objects.get(key=token)
+        tokenInstance = get_object_or_404(Token,key=token)
         return tokenInstance.user
+    
+    @database_sync_to_async
+    def get_user_conversations(self,user):
+        ac = user.conversations.all()
+        
+        return list(ac)

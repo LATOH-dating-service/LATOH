@@ -158,3 +158,5 @@ GRAPHENE = {
         "graphql_jwt.middleware.JSONWebTokenMiddleware",
     ]
 }
+
+LOGIN_URL='/admin/login/'

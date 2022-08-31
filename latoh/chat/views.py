@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from django.views import generic
 from rest_framework import viewsets, permissions
@@ -12,9 +13,22 @@ class ConversationListView(generic.ListView):
     model=Conversation
     context_object_name = "conversations"
 
+    def get_queryset(self):
+        return self.request.user.conversations.all()
+    
+
 class ConversationDetailView(generic.DetailView):
     model=Conversation
     context_object_name = "conversation"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["conversation"] = ConversationSerializer(self.object).data
+        return context
+    
+    def get_queryset(self):
+        return self.request.user.conversations.all()   
+    
     
 class UserViewset(viewsets.ModelViewSet):
     queryset=User.objects.all()

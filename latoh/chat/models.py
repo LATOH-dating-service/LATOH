@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+import uuid
 
 class Chat(models.Model):
     group=models.ForeignKey(Group, related_name='chats', on_delete=models.CASCADE)
@@ -11,6 +12,7 @@ class Chat(models.Model):
         return f"{self.user.username}: {self.text}"
 
 class Conversation(models.Model):
+    code = models.CharField(max_length=255, unique=True, default=str(uuid.uuid4()).replace("-",""), editable=False)
     name=models.CharField(max_length=255,unique=True)
     public=models.BooleanField(default=False)
     online=models.ManyToManyField(User,related_name="conversations")
