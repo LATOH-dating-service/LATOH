@@ -16,6 +16,8 @@ class ConversationListView(generic.ListView):
     def get_queryset(self):
         return self.request.user.conversations.all()
     
+    
+    
 
 class ConversationDetailView(generic.DetailView):
     model=Conversation

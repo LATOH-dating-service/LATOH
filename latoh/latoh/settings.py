@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'latoh',
     'chat',
     'meet',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -156,7 +157,8 @@ GRAPHENE = {
     "SCHEMA": "latoh.schema.schema",
     "MIDDLEWARE": [
         "graphql_jwt.middleware.JSONWebTokenMiddleware",
-    ]
+    ],
+    "ATOMIC_MUTATIONS": True
 }
 
 LOGIN_URL='/admin/login/'

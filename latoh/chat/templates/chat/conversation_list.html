@@ -2,6 +2,34 @@
 
 {% block main %}
 <div class="container">
+  <div class="hstack bg-white shadow my-2">
+    <button class="btn">New Message</button>
+    <button class="btn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-group-modal">New Group</button>
+  </div>
+
+  <div class="modal fade" id="new-group-modal" tabindex="-1" aria-labelledby="new-group-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="new-group-modal-label">New Group</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="new-group-form" method="post">
+            <input type="hidden" name="conversation_type" value="public" />
+            <div class="form-floating">
+              <input type="text" name="name" class="form-control" id="gname" placeholder="Group name">
+              <label for="gname">Group name</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="create-public-conversation">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <div class="list-group">
 
     {% for conversation in conversations %}
@@ -21,3 +49,11 @@
     </div>
 </div>
 {% endblock main %}
+
+{% block js %}
+<script>
+  document.querySelector("#create-public-conversation").addEventListener("click",(event)=>{
+    document.querySelector("#new-group-form").submit()
+  })
+</script>
+{% endblock js %}
